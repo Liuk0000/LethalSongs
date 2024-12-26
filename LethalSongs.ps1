@@ -1,5 +1,6 @@
 $r2ModMan = "r2modmanPlus-local"
 $thunderstore = "Thunderstore Mod Manager\DataFolder"
+$binIdLink = "https://raw.githubusercontent.com/Liuk0000/LethalSongs/refs/heads/master/binId.txt"
 
 function Test-PathOrThrow {
     param (
@@ -13,17 +14,31 @@ function Test-PathOrThrow {
 
 }
 
+function Get-RemoteBinId {
+    $binIdPath = ".\binId.txt"
+
+    Write-Host "Retrieving binId from GitHub: " -ForegroundColor Blue -NoNewline
+    Write-Host $binIdLink -ForegroundColor Yellow
+    Invoke-WebRequest -Uri $binIdLink -OutFile $binIdPath
+    
+    $binId = Get-Content -Path $binIdPath -First 1
+
+    Write-Host "Retrieved binId: " -ForegroundColor Blue -NoNewline
+    Write-Host $binId -ForegroundColor Yellow
+
+    return $binId
+}
+
 function Get-BinId {
     param (
         [string]$binId
     )
 
-    if (!$binId) {
-        Write-Host "Insert the binId to download songs" -ForegroundColor Blue
-        $binId = Read-Host
+    if($binId){
+        return $binId
     }
 
-    return $binId
+    return Get-RemoteBinId
 }
 
 function Get-ModManager {
@@ -71,18 +86,23 @@ try {
 
     $profilePath = "$modManagerPath\LethalCompany\profiles\$profileName"
     Test-PathOrThrow $profilePath "Profile path doesn't exist!"
-    
+
     $binRequestPath = "https://filebin.net/archive/$binId/zip"
     $zipFile = "$userPath\Downloads\lethalSongs.zip"
     $destinationFolder = "$profilePath\BepInEx\Custom Songs\Boombox Music"
 
-    Write-Host "Downloading files from bin: $binRequestPath" -ForegroundColor Blue
+    Write-Host "Downloading files from bin: " -ForegroundColor Blue -NoNewline
+    Write-Host $binRequestPath -ForegroundColor Yellow
 
     curl.exe -X 'GET' $binRequestPath -H 'accept: */*' --output $zipFile
 
-    Write-Host "Extracting files to folder: $destinationFolder" -ForegroundColor Blue
+    Write-Host "Cleaning target folder: " -ForegroundColor Blue -NoNewline
+    Write-Host $destinationFolder -ForegroundColor Yellow
 
     Remove-Item -Path "$destinationFolder\*"
+
+    Write-Host "Extracting files to folder: " -ForegroundColor Blue -NoNewline
+    Write-Host $destinationFolder -ForegroundColor Yellow
 
     Expand-Archive -Path $zipFile -DestinationPath $destinationFolder
 
