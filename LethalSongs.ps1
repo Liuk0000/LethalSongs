@@ -89,7 +89,7 @@ try {
 
     $binRequestPath = "https://filebin.net/archive/$binId/zip"
     $zipFile = "$userPath\Downloads\lethalSongs.zip"
-    $destinationFolder = "$profilePath\BepInEx\plugins\Custom Songs"
+    $destinationFolder = "$profilePath\BepInEx\Custom Songs\Boombox Music"
 
     Write-Host "Downloading files from bin: " -ForegroundColor Blue -NoNewline
     Write-Host $binRequestPath -ForegroundColor Yellow
