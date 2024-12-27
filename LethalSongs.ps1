@@ -75,6 +75,20 @@ function Get-ProfileName {
     return $profileName
 }
 
+function Test-RemoveExistingItem {
+param (
+        [string]$path
+    )
+
+    if ((Test-Path $path)) {
+        Remove-Item -Path $path -Recurse
+        Write-Host "Successfully deleted existing folder: " -ForegroundColor Blue -NoNewline
+        Write-Host $path -ForegroundColor Yellow
+    }else {
+        Write-Host "Removing folder not required as it doesn't exist." -ForegroundColor Blue
+    }
+}
+
 try {
     $userPath = $env:USERPROFILE
     $binId = Get-BinId $args[0]
@@ -99,7 +113,7 @@ try {
     Write-Host "Cleaning target folder: " -ForegroundColor Blue -NoNewline
     Write-Host $destinationFolder -ForegroundColor Yellow
 
-    Remove-Item -Path "$destinationFolder\*"
+    Test-RemoveExistingItem  $destinationFolder
 
     Write-Host "Extracting files to folder: " -ForegroundColor Blue -NoNewline
     Write-Host $destinationFolder -ForegroundColor Yellow
