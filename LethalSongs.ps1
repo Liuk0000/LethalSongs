@@ -68,7 +68,7 @@ function Get-ProfileName {
     )
 
     if (!$profileName) {
-        Write-Host Read-Host "Insert your mod manager profile name" -ForegroundColor Blue
+        Write-Host "Insert your mod manager profile name" -ForegroundColor Blue
         $profileName = Read-Host 
     }
 
